@@ -18,6 +18,7 @@ validation and PKCE.
 ## Features
 
 - ✅ One call: `await digitalLogin.authorize()`
+- 📱 Works with app-to-app sign-in through the mygov app
 - 🔒 Secure by default: system browser session (no WebView), mandatory
   256-bit `state`, optional PKCE (S256) and `nonce`
 - 🧱 Strict callback validation against the registered redirect URI
@@ -72,9 +73,29 @@ URI:
 
 ### iOS
 
-No setup is needed for custom schemes. `ASWebAuthenticationSession` catches
-the redirect itself, so you do not need `CFBundleURLTypes`. `https` redirect
-URIs (Universal Links) require iOS 17.4+.
+Register the redirect URI scheme in `ios/Runner/Info.plist`:
+
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLName</key>
+    <string>digitallogin</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>myapp</string>
+    </array>
+  </dict>
+</array>
+```
+
+Strictly, `ASWebAuthenticationSession` does not need this when the user
+signs in inside the browser. It is required when the user signs in with the
+**mygov app**: mygov sends the user back through the system. The SDK catches
+that redirect in both `AppDelegate` and `UIScene` based apps, closes the
+login sheet and completes `authorize()`.
+
+`https` redirect URIs (Universal Links) require iOS 17.4+.
 
 ## Usage
 

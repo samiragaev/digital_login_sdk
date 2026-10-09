@@ -37,19 +37,23 @@ final class DigitalLoginEnvironment {
   /// Live DigitalLogin (`digital.login.gov.az`).
   static final DigitalLoginEnvironment production = DigitalLoginEnvironment._(
     name: 'production',
-    authorizationEndpoint:
-        Uri.parse('https://digital.login.gov.az/grant-permission'),
-    tokenEndpoint:
-        Uri.parse('https://apidigital.login.gov.az/ssoauth/oauth2/token'),
+    authorizationEndpoint: Uri.parse(
+      'https://digital.login.gov.az/grant-permission',
+    ),
+    tokenEndpoint: Uri.parse(
+      'https://apidigital.login.gov.az/ssoauth/oauth2/token',
+    ),
   );
 
   /// Test DigitalLogin portal (`portal.login.gov.az`).
   static final DigitalLoginEnvironment test = DigitalLoginEnvironment._(
     name: 'test',
-    authorizationEndpoint:
-        Uri.parse('https://portal.login.gov.az/grant-permission'),
-    tokenEndpoint:
-        Uri.parse('https://apiportal.login.gov.az/ssoauth/oauth2/token'),
+    authorizationEndpoint: Uri.parse(
+      'https://portal.login.gov.az/grant-permission',
+    ),
+    tokenEndpoint: Uri.parse(
+      'https://apiportal.login.gov.az/ssoauth/oauth2/token',
+    ),
   );
 
   /// Human readable name, used only for diagnostics.

@@ -27,7 +27,7 @@ sealed class DigitalLoginException implements Exception {
 final class DigitalLoginCancelledException extends DigitalLoginException {
   /// Creates the exception.
   const DigitalLoginCancelledException()
-      : super('The user cancelled the DigitalLogin flow.');
+    : super('The user cancelled the DigitalLogin flow.');
 }
 
 /// DigitalLogin redirected back with an OAuth 2.0 error
@@ -60,7 +60,7 @@ final class DigitalLoginAuthorizationException extends DigitalLoginException {
 final class DigitalLoginStateMismatchException extends DigitalLoginException {
   /// Creates the exception.
   const DigitalLoginStateMismatchException()
-      : super('The state parameter in the callback is missing or invalid.');
+    : super('The state parameter in the callback is missing or invalid.');
 }
 
 /// The callback URL could not be accepted, e.g. it points to a different
@@ -81,16 +81,14 @@ final class DigitalLoginConfigurationException extends DigitalLoginException {
 final class DigitalLoginInProgressException extends DigitalLoginException {
   /// Creates the exception.
   const DigitalLoginInProgressException()
-      : super('An authorization is already in progress.');
+    : super('An authorization is already in progress.');
 }
 
 /// The platform could not open or complete the login session.
 final class DigitalLoginPlatformException extends DigitalLoginException {
   /// Creates the exception.
-  const DigitalLoginPlatformException({
-    required this.code,
-    String? message,
-  }) : super(message ?? 'Platform error "$code".');
+  const DigitalLoginPlatformException({required this.code, String? message})
+    : super(message ?? 'Platform error "$code".');
 
   /// The platform specific error code.
   final String code;

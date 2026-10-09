@@ -22,9 +22,9 @@ final class DigitalLoginConfig {
     this.useNonce = false,
     this.preferEphemeralSession = false,
     Map<String, String> additionalParameters = const {},
-  })  : environment = environment ?? DigitalLoginEnvironment.production,
-        scopes = Set.unmodifiable(scopes ?? DigitalLoginScope.defaults),
-        additionalParameters = Map.unmodifiable(additionalParameters) {
+  }) : environment = environment ?? DigitalLoginEnvironment.production,
+       scopes = Set.unmodifiable(scopes ?? DigitalLoginScope.defaults),
+       additionalParameters = Map.unmodifiable(additionalParameters) {
     _validate();
   }
 
@@ -122,8 +122,9 @@ final class DigitalLoginConfig {
       );
     }
 
-    final overridden =
-        additionalParameters.keys.where(reservedParameters.contains).toList();
+    final overridden = additionalParameters.keys
+        .where(reservedParameters.contains)
+        .toList();
     if (overridden.isNotEmpty) {
       throw DigitalLoginConfigurationException(
         'additionalParameters must not override SDK managed parameters: '
@@ -133,7 +134,8 @@ final class DigitalLoginConfig {
   }
 
   @override
-  String toString() => 'DigitalLoginConfig('
+  String toString() =>
+      'DigitalLoginConfig('
       'clientId: $clientId, '
       'redirectUri: $redirectUri, '
       'environment: ${environment.name}, '

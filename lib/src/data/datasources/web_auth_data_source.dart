@@ -19,11 +19,12 @@ abstract interface class WebAuthDataSource {
   });
 }
 
-/// [WebAuthDataSource] backed by `flutter_web_auth_2`.
+/// Android [WebAuthDataSource] backed by `flutter_web_auth_2`.
 ///
-/// It uses `ASWebAuthenticationSession` on iOS and Custom Tabs on Android.
-/// Both run outside the app process, so the app can never read what the user
-/// types into the DigitalLogin page, unlike an embedded WebView.
+/// It uses Custom Tabs, which run outside the app process, so the app can
+/// never read what the user types into the DigitalLogin page, unlike an
+/// embedded WebView. Its `CallbackActivity` receives the redirect whether it
+/// comes from the browser or from another app such as mygov.
 @internal
 final class FlutterWebAuth2DataSource implements WebAuthDataSource {
   /// Creates the data source.
