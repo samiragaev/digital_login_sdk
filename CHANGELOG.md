@@ -1,3 +1,8 @@
+## 0.2.1
+
+- Rewrote the README as a short step-by-step integration guide with the exact
+  Android and iOS setup.
+
 ## 0.2.0
 
 - **Fix (iOS):** signing in through the mygov app now completes. The redirect

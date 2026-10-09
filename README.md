@@ -2,55 +2,54 @@
 
 [![pub package](https://img.shields.io/pub/v/digital_login_sdk.svg)](https://pub.dev/packages/digital_login_sdk)
 [![CI](https://github.com/samiragaev/digital_login_sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/samiragaev/digital_login_sdk/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Unofficial Flutter SDK for **Azerbaijan DigitalLogin** (`login.gov.az`).
-Sign users in with one call. The SDK handles the browser session, `state`
-validation and PKCE.
+Sign users in with **Azerbaijan DigitalLogin** (`login.gov.az`) in one call.
+Supports browser sign-in and the **mygov app**.
 
-> 🇦🇿 Azərbaycan DigitalLogin üçün Flutter SDK. Bir sətirlə istifadəçini
-> DigitalLogin ilə daxil edin, `authorization code` alın və backend-inizə
-> göndərin.
-
-> **Note:** This package is not affiliated with or endorsed by the
-> DigitalLogin operators. You need your own `client_id` from DigitalLogin.
-
-## Features
-
-- ✅ One call: `await digitalLogin.authorize()`
-- 📱 Works with app-to-app sign-in through the mygov app
-- 🔒 Secure by default: system browser session (no WebView), mandatory
-  256-bit `state`, optional PKCE (S256) and `nonce`
-- 🧱 Strict callback validation against the registered redirect URI
-- 🌍 Production and test environments built in
-- 🎯 Sealed, typed exceptions for exhaustive error handling
-- 🎨 Optional `DigitalLoginButton` widget
-- 🧪 Clean Architecture, fully unit tested
+> Unofficial package. You need a `client_id` and a registered redirect URI
+> from DigitalLogin.
 
 ## How it works
 
-```
-App ──authorize()──► DigitalLogin page (ASWebAuthenticationSession / Custom Tabs)
-                          │ user signs in
-App ◄──code + state── myapp://callback
- │  SDK validates state, redirect URI, parameters
- └──code──► Your backend ──code + client_secret──► DigitalLogin token endpoint
-```
+1. `authorize()` opens DigitalLogin in a secure system browser sheet.
+2. The user signs in (in the browser or in the mygov app).
+3. The SDK validates the response and returns an **authorization code**.
+4. You send the code to **your backend**, which exchanges it for tokens.
+   The client secret never ships in the app.
 
-The SDK deliberately stops at the authorization code. Exchanging it needs the
-**client secret**, which must never ship inside a mobile app.
+## Requirements
 
-## Installation
+| | Minimum |
+|---|---|
+| Flutter | 3.38 |
+| Android | API 24 |
+| iOS | 13.0 |
+
+No runtime permissions are needed on either platform.
+
+## 1. Install
 
 ```bash
 flutter pub add digital_login_sdk
 ```
 
-### Android
+## 2. Choose a redirect URI
 
-Add the callback activity to `android/app/src/main/AndroidManifest.xml`
-inside `<application>`. Replace the scheme with the one from your redirect
-URI:
+Use the redirect URI registered for your client, for example:
+
+```
+myapp://digitallogin
+```
+
+- `myapp` is the **scheme**: lowercase, unique to your app.
+- `digitallogin` is the **host**.
+
+Replace both values in the snippets below with your own.
+
+## 3. Android setup
+
+In `android/app/src/main/AndroidManifest.xml`, add this activity inside
+`<application>`:
 
 ```xml
 <activity
@@ -61,50 +60,43 @@ URI:
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="myapp" />
+        <data android:scheme="myapp" android:host="digitallogin" />
     </intent-filter>
 </activity>
 ```
 
-> If your app already handles the same scheme with another deep link package
-> (`app_links`, `uni_links`, …), remove that intent filter, or use a
-> dedicated scheme for DigitalLogin. Otherwise Android shows a chooser and
-> the result may not reach the SDK.
+> ⚠️ Remove any other `<intent-filter>` for the same scheme, for example one
+> on `MainActivity` added for `app_links` or `uni_links`. Otherwise the
+> redirect will not reach the SDK.
 
-### iOS
+## 4. iOS setup
 
-Register the redirect URI scheme in `ios/Runner/Info.plist`:
+In `ios/Runner/Info.plist`, add the scheme inside the top-level `<dict>`:
 
 ```xml
 <key>CFBundleURLTypes</key>
 <array>
-  <dict>
-    <key>CFBundleURLName</key>
-    <string>digitallogin</string>
-    <key>CFBundleURLSchemes</key>
-    <array>
-      <string>myapp</string>
-    </array>
-  </dict>
+    <dict>
+        <key>CFBundleURLName</key>
+        <string>digitallogin</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>myapp</string>
+        </array>
+    </dict>
 </array>
 ```
 
-Strictly, `ASWebAuthenticationSession` does not need this when the user
-signs in inside the browser. It is required when the user signs in with the
-**mygov app**: mygov sends the user back through the system. The SDK catches
-that redirect in both `AppDelegate` and `UIScene` based apps, closes the
-login sheet and completes `authorize()`.
+The mygov app uses this entry to return the user to your app.
 
-`https` redirect URIs (Universal Links) require iOS 17.4+.
-
-## Usage
+## 5. Sign in
 
 ```dart
 import 'package:digital_login_sdk/digital_login_sdk.dart';
 
 final digitalLogin = DigitalLogin(
   DigitalLoginConfig(
-    clientId: 'your-client-id',
+    clientId: 'YOUR_CLIENT_ID',
     redirectUri: Uri.parse('myapp://digitallogin'),
     environment: DigitalLoginEnvironment.production, // or .test
   ),
@@ -113,97 +105,87 @@ final digitalLogin = DigitalLogin(
 Future<void> signIn() async {
   try {
     final result = await digitalLogin.authorize();
-    // { authorizationCode, redirectUri, [codeVerifier], [nonce] }
-    await myApi.post('/auth/digital-login', body: result.toJson());
+
+    // Send to your backend:
+    // { "authorizationCode": "...", "redirectUri": "myapp://digitallogin" }
+    await api.post('/auth/digital-login', body: result.toJson());
   } on DigitalLoginCancelledException {
-    // The user closed the page. Usually not an error.
-  } on DigitalLoginAuthorizationException catch (e) {
-    // DigitalLogin returned an OAuth error, e.g. e.isAccessDenied
+    // The user closed the login page. Usually no message is needed.
   } on DigitalLoginException catch (e) {
-    // State mismatch, invalid callback, platform error, ...
+    // Show an error to the user.
   }
 }
 ```
 
-### Ready made button
+Create `DigitalLogin` once (for example in your DI container) and reuse it.
+
+### Optional: ready-made button
 
 ```dart
-DigitalLoginButton(
-  onPressed: signIn,
-  isLoading: isLoading,
-  label: 'DigitalLogin ilə daxil ol',
-)
+DigitalLoginButton(onPressed: signIn, isLoading: isLoading)
 ```
 
-### Configuration
+## Configuration
 
 | Option | Default | Description |
 |---|---|---|
-| `clientId` | required | Client ID issued by DigitalLogin |
-| `redirectUri` | required | Registered redirect URI (custom scheme or `https`) |
-| `environment` | `production` | `production`, `test` or `DigitalLoginEnvironment.custom(...)` |
-| `scopes` | `openid user certificate session` | Requested scopes |
-| `usePkce` | `false` | Adds an S256 `code_challenge`; send `codeVerifier` to your backend |
-| `useNonce` | `false` | Adds an OIDC `nonce`; verify it in the ID token on your backend |
-| `preferEphemeralSession` | `false` | Do not share cookies with the browser (always ask to sign in) |
-| `additionalParameters` | `{}` | Extra query parameters. SDK managed keys cannot be overridden |
+| `clientId` | required | Client ID from DigitalLogin |
+| `redirectUri` | required | Must match the registered URI exactly |
+| `environment` | `production` | `production`, `test`, or `DigitalLoginEnvironment.custom(...)` |
+| `scopes` | `openid user certificate session` | Requested permissions |
+| `usePkce` | `false` | Adds a PKCE challenge. Send `result.codeVerifier` to your backend |
+| `useNonce` | `false` | Adds an OIDC nonce. Verify `result.nonce` on your backend |
+| `preferEphemeralSession` | `false` | iOS: skips the "wants to use login.gov.az" prompt, but does not reuse browser cookies |
 
-Invalid configuration (for example an `http` redirect URI) throws
-`DigitalLoginConfigurationException` immediately.
+## Errors
 
-### Errors
+Every error is a `DigitalLoginException`:
 
-All errors extend the sealed `DigitalLoginException`:
-
-| Exception | When |
+| Exception | Meaning |
 |---|---|
 | `DigitalLoginCancelledException` | The user closed the login page |
-| `DigitalLoginAuthorizationException` | DigitalLogin returned `error=...` |
-| `DigitalLoginStateMismatchException` | `state` missing or wrong (possible CSRF) |
-| `DigitalLoginInvalidCallbackException` | Callback does not match the redirect URI, has no code, repeats parameters |
-| `DigitalLoginConfigurationException` | Invalid configuration |
-| `DigitalLoginInProgressException` | `authorize()` called while another call is running |
-| `DigitalLoginPlatformException` | The platform could not open the session |
+| `DigitalLoginAuthorizationException` | DigitalLogin returned an error (`e.isAccessDenied`) |
+| `DigitalLoginStateMismatchException` | The response failed the security check (`state`) |
+| `DigitalLoginInvalidCallbackException` | The redirect was malformed or had no code |
+| `DigitalLoginConfigurationException` | Invalid config, e.g. an `http` redirect URI |
+| `DigitalLoginInProgressException` | `authorize()` is already running |
+| `DigitalLoginPlatformException` | The platform could not open the login page |
 
-## Backend: exchanging the code
+## Backend: exchange the code
 
-Your backend sends the code to the token endpoint
-(`DigitalLoginEnvironment.production.tokenEndpoint`) together with the
-client secret and **the same** `redirect_uri`:
+Your backend calls the token endpoint
+(`DigitalLoginEnvironment.production.tokenEndpoint`) with the code, your
+client secret, and **the same** redirect URI:
 
 ```http
 POST https://apidigital.login.gov.az/ssoauth/oauth2/token
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=authorization_code&code=...&redirect_uri=myapp://digitallogin
-&client_id=...&client_secret=...[&code_verifier=...]
+grant_type=authorization_code
+&code=AUTHORIZATION_CODE
+&redirect_uri=myapp://digitallogin
+&client_id=YOUR_CLIENT_ID
+&client_secret=YOUR_CLIENT_SECRET
 ```
 
-Check the DigitalLogin documentation for the exact authentication method
-your client uses.
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Login page opens, but nothing happens after sign-in | The scheme and host in `AndroidManifest.xml` / `Info.plist` must match `redirectUri` exactly |
+| Android shows an "Open with" chooser | Another intent filter uses the same scheme. Remove it (step 3) |
+| iOS: nothing happens after the mygov app returns | Add `CFBundleURLTypes` (step 4) |
+| `DigitalLoginConfigurationException` | `redirectUri` must be lowercase and must not use `http` |
 
 ## Security
 
-See [SECURITY.md](SECURITY.md) for the threat model and how to report
-vulnerabilities.
+- Sign-in runs in the system browser, never in a WebView.
+- Each request has a random 256-bit `state`. The SDK rejects responses
+  without it.
+- Codes are never logged. The client secret never touches the app.
 
-## Architecture
-
-```
-lib/
-├── digital_login_sdk.dart        # public API
-└── src/
-    ├── core/                     # secure random, constant-time compare
-    ├── domain/                   # entities, exceptions, repository contract, use case
-    ├── data/                     # browser data source, request builder, callback parser
-    └── presentation/             # DigitalLogin facade, DigitalLoginButton
-```
-
-## Contributing
-
-Issues and pull requests are welcome. Run `flutter analyze` and
-`flutter test` before opening a PR.
+See [SECURITY.md](SECURITY.md) to report a vulnerability.
 
 ## License
 
-MIT © Samir Aghayev
+MIT
