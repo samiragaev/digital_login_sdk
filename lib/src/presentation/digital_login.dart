@@ -1,6 +1,7 @@
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
 
 import '../core/secure_random.dart';
+import '../data/datasources/ios_web_auth_data_source.dart';
 import '../data/datasources/web_auth_data_source.dart';
 import '../data/repositories/authorization_repository_impl.dart';
 import '../data/services/authorization_request_builder.dart';
@@ -34,7 +35,7 @@ final class DigitalLogin {
     return DigitalLogin.withRepository(
       config,
       AuthorizationRepositoryImpl(
-        webAuth: const FlutterWebAuth2DataSource(),
+        webAuth: _platformDataSource(),
         requestBuilder: AuthorizationRequestBuilder(
           random: random,
           pkce: PkceGenerator(random),
@@ -47,13 +48,18 @@ final class DigitalLogin {
   /// Creates a client with a custom [repository]. Tests only.
   @visibleForTesting
   DigitalLogin.withRepository(this.config, AuthorizationRepository repository)
-      : _authorize = AuthorizeUseCase(repository);
+    : _authorize = AuthorizeUseCase(repository);
 
   /// The configuration this client uses.
   final DigitalLoginConfig config;
 
   final AuthorizeUseCase _authorize;
   bool _isAuthorizing = false;
+
+  static WebAuthDataSource _platformDataSource() =>
+      defaultTargetPlatform == TargetPlatform.iOS
+      ? const IosWebAuthDataSource()
+      : const FlutterWebAuth2DataSource();
 
   /// Whether [authorize] is currently running.
   bool get isAuthorizing => _isAuthorizing;

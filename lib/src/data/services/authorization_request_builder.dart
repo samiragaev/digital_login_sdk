@@ -12,8 +12,8 @@ final class AuthorizationRequestBuilder {
   const AuthorizationRequestBuilder({
     required SecureRandomGenerator random,
     required PkceGenerator pkce,
-  })  : _random = random,
-        _pkce = pkce;
+  }) : _random = random,
+       _pkce = pkce;
 
   final SecureRandomGenerator _random;
   final PkceGenerator _pkce;
@@ -33,7 +33,7 @@ final class AuthorizationRequestBuilder {
       'redirect_uri': config.redirectUriString,
       'scope': config.scopes.map((scope) => scope.value).join(' '),
       'state': state,
-      if (nonce != null) 'nonce': nonce,
+      'nonce': ?nonce,
       if (pkce != null) ...{
         'code_challenge': pkce.challenge,
         'code_challenge_method': PkceGenerator.method,

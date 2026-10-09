@@ -1,4 +1,6 @@
 PODS:
+  - digital_login_sdk (0.2.0):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_web_auth_2 (5.0.0):
     - Flutter
@@ -6,11 +8,14 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - digital_login_sdk (from `.symlinks/plugins/digital_login_sdk/ios`)
   - Flutter (from `Flutter`)
   - flutter_web_auth_2 (from `.symlinks/plugins/flutter_web_auth_2/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 EXTERNAL SOURCES:
+  digital_login_sdk:
+    :path: ".symlinks/plugins/digital_login_sdk/ios"
   Flutter:
     :path: Flutter
   flutter_web_auth_2:
@@ -19,6 +24,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
+  digital_login_sdk: e9e051dba59adff08f7e3f6c16541f30cacef5ad
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_web_auth_2: 646fc9df97a01c59e5eea99b237da2c6360f8439
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b

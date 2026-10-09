@@ -37,10 +37,7 @@ class DigitalLoginButton extends StatelessWidget {
     final Widget leading = isLoading
         ? SizedBox.square(
             dimension: 18,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: foreground,
-            ),
+            child: CircularProgressIndicator(strokeWidth: 2, color: foreground),
           )
         : icon ?? const Icon(Icons.verified_user_outlined, size: 20);
 
@@ -51,7 +48,8 @@ class DigitalLoginButton extends StatelessWidget {
       excludeSemantics: true,
       child: FilledButton.icon(
         onPressed: isLoading ? null : onPressed,
-        style: style ??
+        style:
+            style ??
             FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(52),
               shape: RoundedRectangleBorder(

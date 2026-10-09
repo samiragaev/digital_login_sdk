@@ -34,15 +34,16 @@ final class DigitalLoginResult {
 
   /// A JSON-ready map with the fields a backend needs for the token exchange.
   Map<String, String> toJson() => {
-        'authorizationCode': code,
-        'redirectUri': redirectUri,
-        if (codeVerifier != null) 'codeVerifier': codeVerifier!,
-        if (nonce != null) 'nonce': nonce!,
-      };
+    'authorizationCode': code,
+    'redirectUri': redirectUri,
+    'codeVerifier': ?codeVerifier,
+    'nonce': ?nonce,
+  };
 
   // Secrets are redacted so accidental logging does not leak them.
   @override
-  String toString() => 'DigitalLoginResult('
+  String toString() =>
+      'DigitalLoginResult('
       'code: <redacted>, '
       'redirectUri: $redirectUri, '
       'codeVerifier: ${codeVerifier == null ? 'null' : '<redacted>'}, '

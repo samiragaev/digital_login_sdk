@@ -31,8 +31,9 @@ final class DigitalLoginScope {
   static const DigitalLoginScope user = DigitalLoginScope._('user');
 
   /// Information about the certificate used to sign in.
-  static const DigitalLoginScope certificate =
-      DigitalLoginScope._('certificate');
+  static const DigitalLoginScope certificate = DigitalLoginScope._(
+    'certificate',
+  );
 
   /// Session information.
   static const DigitalLoginScope session = DigitalLoginScope._('session');
