@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'digital_login_sdk'
-  s.version          = '0.2.0'
+  s.version          = '0.2.1'
   s.summary          = 'Flutter SDK for Azerbaijan DigitalLogin.'
   s.description      = <<-DESC
 Runs the DigitalLogin authorization in ASWebAuthenticationSession and also
