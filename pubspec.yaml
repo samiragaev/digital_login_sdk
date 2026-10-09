@@ -1,0 +1,36 @@
+name: digital_login_sdk
+description: >-
+  Unofficial Flutter SDK for Azerbaijan DigitalLogin (login.gov.az).
+  Secure OAuth 2.0 authorization code flow with state validation and
+  optional PKCE in a single call.
+version: 0.1.0
+repository: https://github.com/samiragaev/digital_login_sdk
+issue_tracker: https://github.com/samiragaev/digital_login_sdk/issues
+documentation: https://github.com/samiragaev/digital_login_sdk#readme
+
+topics:
+  - oauth2
+  - authentication
+  - login
+  - azerbaijan
+  - openid
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+platforms:
+  android:
+  ios:
+
+dependencies:
+  crypto: ^3.0.6
+  flutter:
+    sdk: flutter
+  flutter_web_auth_2: ^5.1.0
+  meta: ^1.15.0
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter

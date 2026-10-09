@@ -1,0 +1,25 @@
+# Publishes to pub.dev when a tag like v0.1.1 is pushed.
+# One-time setup: pub.dev > digital_login_sdk > Admin > Automated publishing,
+# enable GitHub Actions for samiragaev/digital_login_sdk with tag pattern v{{version}}.
+name: Publish
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pub.dev
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: flutter test
+      - run: dart pub publish --force
