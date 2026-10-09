@@ -17,12 +17,8 @@ void main() {
     redirectUri: Uri.parse('myapp://digitallogin'),
   );
 
-  DigitalLoginResult parse(String url, {DigitalLoginConfig? override}) =>
-      parser.parse(
-        callbackUrl: url,
-        request: request,
-        config: override ?? config,
-      );
+  DigitalLoginResult parse(String url, {DigitalLoginConfig? override}) => parser
+      .parse(callbackUrl: url, request: request, config: override ?? config);
 
   Matcher throwsType<T>() => throwsA(isA<T>());
 
@@ -44,8 +40,9 @@ void main() {
     });
 
     test('reports granted scopes', () {
-      final result =
-          parse('myapp://digitallogin?code=a&state=$state&scope=openid%20user');
+      final result = parse(
+        'myapp://digitallogin?code=a&state=$state&scope=openid%20user',
+      );
       expect(result.grantedScopes, {'openid', 'user'});
     });
 

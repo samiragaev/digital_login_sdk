@@ -16,9 +16,9 @@ final class AuthorizationRepositoryImpl implements AuthorizationRepository {
     required WebAuthDataSource webAuth,
     required AuthorizationRequestBuilder requestBuilder,
     required AuthorizationResponseParser responseParser,
-  })  : _webAuth = webAuth,
-        _requestBuilder = requestBuilder,
-        _responseParser = responseParser;
+  }) : _webAuth = webAuth,
+       _requestBuilder = requestBuilder,
+       _responseParser = responseParser;
 
   final WebAuthDataSource _webAuth;
   final AuthorizationRequestBuilder _requestBuilder;

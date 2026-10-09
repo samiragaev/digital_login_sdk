@@ -7,13 +7,12 @@ void main() {
     String redirect = 'myapp://digitallogin',
     Set<DigitalLoginScope>? scopes,
     Map<String, String> extra = const {},
-  }) =>
-      DigitalLoginConfig(
-        clientId: clientId,
-        redirectUri: Uri.parse(redirect),
-        scopes: scopes,
-        additionalParameters: extra,
-      );
+  }) => DigitalLoginConfig(
+    clientId: clientId,
+    redirectUri: Uri.parse(redirect),
+    scopes: scopes,
+    additionalParameters: extra,
+  );
 
   Matcher throwsConfig() => throwsA(isA<DigitalLoginConfigurationException>());
 
@@ -59,11 +58,10 @@ void main() {
     test('collections are immutable', () {
       final c = config();
       expect(
-          () => c.scopes.add(DigitalLoginScope.openid), throwsUnsupportedError);
-      expect(
-        () => c.additionalParameters['a'] = 'b',
+        () => c.scopes.add(DigitalLoginScope.openid),
         throwsUnsupportedError,
       );
+      expect(() => c.additionalParameters['a'] = 'b', throwsUnsupportedError);
     });
   });
 
