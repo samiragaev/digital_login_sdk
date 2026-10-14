@@ -3,14 +3,11 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-/// Produces unguessable, URL safe tokens from a cryptographically secure
-/// random number generator.
 @internal
 final class SecureRandomGenerator {
   /// Creates a generator backed by [Random.secure].
   SecureRandomGenerator() : _random = Random.secure();
 
-  /// Creates a generator with a custom source. Tests only.
   @visibleForTesting
   SecureRandomGenerator.withRandom(this._random);
 
