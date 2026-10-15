@@ -1,7 +1,7 @@
-## 0.2.1
+## 0.2.2
 
-- Rewrote the README as a short step-by-step integration guide with the exact
-  Android and iOS setup.
+- Added a banner and screenshots to the README and pub.dev.
+
 
 ## 0.2.0
 

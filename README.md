@@ -2,6 +2,9 @@
 
 [![pub package](https://img.shields.io/pub/v/digital_login_sdk.svg)](https://pub.dev/packages/digital_login_sdk)
 [![CI](https://github.com/samiragaev/digital_login_sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/samiragaev/digital_login_sdk/actions/workflows/ci.yml)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/samiragaev/digital_login_sdk/main/doc/banner.webp" alt="digital_login_sdk" width="100%">
+</p>
 
 Sign users in with **Azerbaijan DigitalLogin** (`login.gov.az`) in one call.
 Supports browser sign-in and the **mygov app**.
